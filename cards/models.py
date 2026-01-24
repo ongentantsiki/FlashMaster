@@ -7,7 +7,7 @@ class Deck(models.Model):
     """
     Model representing a flashcard deck.
     
-    Attr:
+    Attributes:
         name: The name of the deck.
         owner: The user who owns the deck.
         created_at: The timestamp when the deck was created.
