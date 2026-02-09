@@ -1,0 +1,315 @@
+{% extends "cards/base.html" %}
+
+{% block title %}{{ deck.name }} - FlashMaster{% endblock %}
+
+{% block content %}
+
+<style>
+    .deck-detail-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .deck-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+    }
+
+    .deck-header h1 {
+        font-size: 2.5em;
+        margin: 0 0 15px 0;
+        font-weight: 700;
+    }
+
+    .deck-meta {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        opacity: 0.95;
+    }
+
+    .deck-date {
+        font-size: 1em;
+    }
+
+    .deck-actions {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 12px 24px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.3s;
+        text-align: center;
+        border: none;
+        cursor: pointer;
+        font-size: 1em;
+    }
+
+    .btn-primary {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #5568d3;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #f0f0f0;
+        color: #333;
+        border: 2px solid #667eea;
+    }
+
+    .btn-secondary:hover {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-danger {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #c0392b;
+    }
+
+    .btn-success {
+        background: #27ae60;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #229954;
+    }
+
+    .cards-section {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+
+    .cards-header {
+        margin-bottom: 25px;
+    }
+
+    .cards-header h2 {
+        font-size: 1.8em;
+        margin: 0 0 10px 0;
+        color: #333;
+    }
+
+    .cards-count {
+        color: #666;
+        font-size: 1.1em;
+    }
+
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .card-item {
+        background: white;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        transition: all 0.3s;
+        cursor: pointer;
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        border-color: #667eea;
+    }
+
+    .card-front h3,
+    .card-back h3 {
+        color: #667eea;
+        font-size: 0.9em;
+        text-transform: uppercase;
+        margin: 0 0 10px 0;
+        letter-spacing: 1px;
+    }
+
+    .card-front p,
+    .card-back p {
+        margin: 0;
+        color: #333;
+        line-height: 1.6;
+        font-size: 1.05em;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #999;
+    }
+
+    .empty-state p {
+        font-size: 1.1em;
+        margin: 10px 0;
+    }
+
+    .add-card-section {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .add-card-section h2 {
+        font-size: 1.8em;
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .card-form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group label {
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .form-group textarea {
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-family: Arial, sans-serif;
+        font-size: 1em;
+        min-height: 100px;
+        resize: vertical;
+        transition: border-color 0.3s;
+    }
+
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .card-form button {
+        align-self: flex-start;
+        margin-top: 10px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .deck-detail-container {
+            padding: 15px;
+        }
+
+        .deck-header {
+            padding: 20px;
+        }
+
+        .deck-header h1 {
+            font-size: 1.8em;
+        }
+
+        .deck-meta {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .deck-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        .cards-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .cards-section,
+        .add-card-section {
+            padding: 20px;
+        }
+    }
+</style>
+
+<div class="deck-detail-container">
+    <div class="deck-header">
+        <h1>{{ deck.name }}</h1>
+        <div class="deck-meta">
+            <span class="deck-date">📅 Utworzona: {{ deck.created_at|date:"d.m.Y H:i" }}</span>
+            {% if deck.updated_at %}
+            <span class="deck-date">✏️ Ostatnia zmiana: {{ deck.updated_at|date:"d.m.Y H:i" }}</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="deck-actions">
+        <a href="{% url 'deck_edit' deck.id %}" class="btn btn-primary">✏️ Edytuj talię</a>
+        <a href="{% url 'deck_list' %}" class="btn btn-secondary">← Powrót do talii</a>
+        <a href="{% url 'deck_delete' deck.id %}" class="btn btn-danger" onclick="return confirm('Na pewno chcesz usunąć tę talię?')">🗑️ Usuń talię</a>
+    </div>
+
+    <div class="cards-section">
+        <div class="cards-header">
+            <h2>Fiszki w talii</h2>
+            <p class="cards-count">Razem fiszek: <strong>{{ deck.cards.all|length }}</strong></p>
+        </div>
+
+        {% if deck.cards.all %}
+            <div class="cards-grid">
+                {% for card in deck.cards.all %}
+                    <div class="card-item">
+                        <div class="card-front">
+                            <h3>Pytanie:</h3>
+                            <p>{{ card.question }}</p>
+                        </div>
+                        <div class="card-back">
+                            <h3>Odpowiedź:</h3>
+                            <p>{{ card.answer }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>😔 Brak fiszek w tej talii.</p>
+                <p>Dodaj pierwszą fiszkę, aby rozpocząć naukę!</p>
+            </div>
+        {% endif %}
+    </div>
+<a href="{% url 'card_create' deck.id %}" class="btn btn-success">➕ Dodaj nową fiszkę</a>
+
+
+    
+</div>
+
+{% endblock %}

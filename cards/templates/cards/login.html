@@ -1,0 +1,16 @@
+{% extends "cards/base.html" %}
+ 
+{% block title %}Logowanie{% endblock %}
+ 
+{% block content %}
+
+<h1>Logowanie</h1>
+    <form method ="post">
+        {% csrf_token %}
+        {{ form.as_p }} <!-- kazdy text formularza (template) zamienia sie w p> paragraph -->
+        <button type="submit">Zaloguj sie</button>
+    </form>
+
+<p>Nie masz konta? <a href="{% url 'register' %}">Zarejestruj sie</a></p>
+    
+{% endblock %}

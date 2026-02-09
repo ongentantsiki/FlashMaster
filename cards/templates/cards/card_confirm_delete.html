@@ -1,0 +1,183 @@
+{% extends "cards/base.html" %}
+
+{% block title %}Usuń fiszkę - FlashMaster{% endblock %}
+
+{% block content %}
+<div class="delete-confirm-container">
+    <div class="confirm-card">
+        <div class="confirm-header">
+            <h1>⚠️ Potwierdzenie usunięcia</h1>
+        </div>
+
+        <div class="confirm-message">
+            <p>Czy na pewno chcesz usunąć tę fiszkę?</p>
+            <p class="warning-text">Tej operacji nie będzie można cofnąć.</p>
+        </div>
+
+        <div class="card-preview">
+            <div class="preview-item">
+                <span class="preview-label">Pytanie:</span>
+                <span class="preview-content">{{ card.front }}</span>
+            </div>
+            <div class="preview-item">
+                <span class="preview-label">Odpowiedź:</span>
+                <span class="preview-content">{{ card.back }}</span>
+            </div>
+        </div>
+
+        <div class="confirm-actions">
+            <form method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-large">
+                    🗑️ Usuń fiszkę
+                </button>
+            </form>
+            <a href="{% url 'card_detail' card.id %}" class="btn btn-secondary btn-large">
+                ← Anuluj
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .delete-confirm-container {
+        max-width: 500px;
+        margin: 50px auto;
+        padding: 20px;
+    }
+
+    .confirm-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        padding: 30px;
+    }
+
+    .confirm-header {
+        text-align: center;
+        margin-bottom: 25px;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 20px;
+    }
+
+    .confirm-header h1 {
+        font-size: 1.8em;
+        color: #e74c3c;
+        margin: 0;
+    }
+
+    .confirm-message {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .confirm-message p {
+        font-size: 1.1em;
+        color: #333;
+        margin: 10px 0;
+    }
+
+    .warning-text {
+        color: #e74c3c;
+        font-weight: 600;
+    }
+
+    .card-preview {
+        background: #f9f9f9;
+        border-left: 4px solid #e74c3c;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 25px;
+    }
+
+    .preview-item {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 12px;
+    }
+
+    .preview-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .preview-label {
+        font-size: 0.9em;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #999;
+        margin-bottom: 5px;
+        letter-spacing: 0.5px;
+    }
+
+    .preview-content {
+        font-size: 1em;
+        color: #333;
+        word-break: break-word;
+    }
+
+    .confirm-actions {
+        display: flex;
+        gap: 10px;
+        flex-direction: column;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 12px 24px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.3s;
+        text-align: center;
+        border: none;
+        cursor: pointer;
+        font-size: 1em;
+    }
+
+    .btn-danger {
+        background: #e74c3c;
+        color: white;
+        width: 100%;
+    }
+
+    .btn-danger:hover {
+        background: #c0392b;
+        box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+    }
+
+    .btn-secondary {
+        background: #f0f0f0;
+        color: #333;
+        border: 2px solid #e0e0e0;
+        width: 100%;
+    }
+
+    .btn-secondary:hover {
+        background: #e0e0e0;
+    }
+
+    .btn-large {
+        padding: 14px 20px;
+        font-size: 1.05em;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .delete-confirm-container {
+            margin: 30px auto;
+        }
+
+        .confirm-card {
+            padding: 20px;
+        }
+
+        .confirm-header h1 {
+            font-size: 1.5em;
+        }
+
+        .confirm-message p {
+            font-size: 1em;
+        }
+    }
+</style>
+{% endblock %}

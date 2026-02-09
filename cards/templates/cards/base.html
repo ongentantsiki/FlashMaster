@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FlashMaster{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'cards/css/styles.css' %}">
+   
+</head>
+<body>
+    <nav>
+        <a href="{% url 'home' %}">Strona główna</a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'deck_list' %}">Moje talie</a>
+        <a href="{% url 'logout' %}">Wyloguj ({{ user.username }})</a>
+        {% else %}
+        <a href="{% url 'login' %}">Zaloguj</a>
+        <a href="{% url 'register' %}">Rejestracja</a>
+        {% endif %}
+    </nav>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

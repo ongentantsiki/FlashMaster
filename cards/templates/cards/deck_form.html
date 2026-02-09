@@ -1,0 +1,18 @@
+{% extends "cards/base.html" %}
+ 
+{% block title %}Nowa talia - Flashmaster{% endblock %}
+ 
+{% block content %}
+    # jeżeli "deck" istnieje to "Edytuj talię", jak nie - "Stwórz" #
+<h1>{% if deck %}Edytuj talię{% else %}Nowa talia{% endif %}</h1>
+ 
+<form method="post">
+    {% csrf_token %}
+    <div>
+        <label for="name">Nazwa talii:</label>
+        <input type="text" id="name" name="name" value ="{{ deck.name|default:'' }}" required>
+    </div>
+    <button type="submit">Zapisz</button>
+    <a href="{% url 'deck_list' %}">Anuluj</a>
+</form>
+{% endblock %}

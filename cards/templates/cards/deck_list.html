@@ -1,0 +1,27 @@
+{% extends "cards/base.html" %}
+ 
+{% block title %}Moje talie - Flashmaster{% endblock %}
+ 
+{% block content %}
+<div class="deck-list">
+    <h1>Moje talie fiszek</h1>
+ 
+    <a href="{% url 'deck_create' %}" class="btn btn-primary">Utwórz nową talię</a>
+ 
+    {% if decks %}
+        <ul class="decks">
+            {% for deck in decks %}
+                <li class="deck-item">
+                    <a href="{% url 'deck_detail' deck.id %}">{{ deck.name }}</a>
+                    <p class="deck-date">Utworzona: {{ deck.created_at|date:"d.m.Y" }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="empty-state">
+            Nie masz jeszcze żadnych talii. Możesz je <a href="{% url 'deck_create' %}">stworzyć!</a>
+        </p>
+    {% endif %}
+</div>
+{% endblock %}
+ 

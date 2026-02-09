@@ -1,0 +1,204 @@
+{% extends "cards/base.html" %}
+
+{% block title %}{% if card %}Edytuj fiszkę{% else %}Nowa fiszka{% endif %} - FlashMaster{% endblock %}
+
+{% block content %}
+<div class="card-form-container">
+    <div class="form-header">
+        <h1>{% if card %}Edytuj fiszkę{% else %}Dodaj nową fiszkę{% endif %}</h1>
+        <p class="form-subtitle">Uzupełnij pytanie i odpowiedź</p>
+        
+    </div>
+
+    <form method="post" class="card-form">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="front">Pytanie (przód fiszki):</label>
+            <textarea id="front" name="front" placeholder="Wpisz pytanie..." required maxlength="250">{{ card.front|default:'' }}</textarea>
+            <span class="char-count"><span id="front-count">0</span>/250</span>
+        </div>
+
+        <div class="form-group">
+            <label for="back">Odpowiedź (tył fiszki):</label>
+            <textarea id="back" name="back" placeholder="Wpisz odpowiedź..." required maxlength="250">{{ card.back|default:'' }}</textarea>
+            <span class="char-count"><span id="back-count">0</span>/250</span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-large">
+                {% if card %}✏️ Zaktualizuj fiszkę{% else %}➕ Dodaj fiszkę{% endif %}
+            </button>
+            
+        </div>
+    </form>
+</div>
+
+<style>
+    .card-form-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .form-header h1 {
+        font-size: 2em;
+        margin: 0 0 10px 0;
+        color: #333;
+    }
+
+    .form-subtitle {
+        color: #666;
+        font-size: 1.1em;
+        margin: 0;
+    }
+
+    .card-form {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .form-group label {
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+        font-size: 1.05em;
+    }
+
+    .form-group textarea {
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-family: Arial, sans-serif;
+        font-size: 1em;
+        min-height: 100px;
+        resize: vertical;
+        transition: all 0.3s;
+        color: #333;
+    }
+
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .char-count {
+        position: absolute;
+        top: 10px;
+        right: 12px;
+        font-size: 0.85em;
+        color: #999;
+        background: white;
+        padding: 2px 6px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 12px 24px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.3s;
+        text-align: center;
+        border: none;
+        cursor: pointer;
+        font-size: 1em;
+        flex: 1;
+    }
+
+    .btn-primary {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #5568d3;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #f0f0f0;
+        color: #333;
+        border: 2px solid #667eea;
+    }
+
+    .btn-secondary:hover {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-large {
+        padding: 14px 20px;
+        font-size: 1.05em;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .card-form-container {
+            padding: 10px;
+        }
+
+        .card-form {
+            padding: 20px;
+        }
+
+        .form-header h1 {
+            font-size: 1.5em;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<script>
+    // Character counter for front textarea
+    const frontTextarea = document.getElementById('front');
+    const frontCount = document.getElementById('front-count');
+    
+    if (frontTextarea) {
+        frontTextarea.addEventListener('input', () => {
+            frontCount.textContent = frontTextarea.value.length;
+        });
+        frontCount.textContent = frontTextarea.value.length;
+    }
+
+    // Character counter for back textarea
+    const backTextarea = document.getElementById('back');
+    const backCount = document.getElementById('back-count');
+    
+    if (backTextarea) {
+        backTextarea.addEventListener('input', () => {
+            backCount.textContent = backTextarea.value.length;
+        });
+        backCount.textContent = backTextarea.value.length;
+    }
+</script>
+
+{% endblock %}

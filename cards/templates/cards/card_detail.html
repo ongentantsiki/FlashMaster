@@ -1,0 +1,199 @@
+{% extends "cards/base.html" %}
+
+{% block title %}Fiszka - FlashMaster{% endblock %}
+
+{% block content %}
+<div class="card-detail-container">
+    <div class="card-header">
+        <a href="{% url 'deck_detail' card.deck.id %}" class="back-link">← {{ card.deck.name }}</a>
+        <h1>Szczegóły fiszki</h1>
+    </div>
+
+    <div class="card-display">
+        <div class="card-side front">
+            <div class="side-label">Pytanie</div>
+            <div class="side-content">{{ card.front }}</div>
+        </div>
+
+        <div class="card-side back">
+            <div class="side-label">Odpowiedź</div>
+            <div class="side-content">{{ card.back }}</div>
+        </div>
+    </div>
+
+    <div class="card-meta">
+        <span class="meta-item">📅 Utworzona: {{ card.created_at|date:"d.m.Y H:i" }}</span>
+    </div>
+
+    <div class="card-actions">
+        <a href="{% url 'card_edit' card.id %}" class="btn btn-primary">✏️ Edytuj</a>
+        <a href="{% url 'card_delete' card.id %}" class="btn btn-danger" onclick="return confirm('Na pewno chcesz usunąć tę fiszkę?')">🗑️ Usuń</a>
+        <a href="{% url 'deck_detail' card.deck.id %}" class="btn btn-secondary">← Powrót do talii</a>
+    </div>
+</div>
+
+<style>
+    .card-detail-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .card-header {
+        margin-bottom: 30px;
+    }
+
+    .back-link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: 10px;
+        transition: opacity 0.3s;
+    }
+
+    .back-link:hover {
+        opacity: 0.8;
+    }
+
+    .card-header h1 {
+        font-size: 2em;
+        color: #333;
+        margin: 0;
+    }
+
+    .card-display {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .card-side {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        min-height: 250px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-side.front {
+        border-left: 5px solid #667eea;
+    }
+
+    .card-side.back {
+        border-left: 5px solid #27ae60;
+    }
+
+    .side-label {
+        font-size: 0.9em;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #999;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+    }
+
+    .side-content {
+        font-size: 1.2em;
+        line-height: 1.8;
+        color: #333;
+        word-wrap: break-word;
+        word-break: break-word;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+    }
+
+    .card-meta {
+        background: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .meta-item {
+        color: #666;
+        font-size: 0.95em;
+    }
+
+    .card-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 12px 24px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.3s;
+        text-align: center;
+        border: none;
+        cursor: pointer;
+        font-size: 1em;
+    }
+
+    .btn-primary {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #5568d3;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+        background: #f0f0f0;
+        color: #333;
+        border: 2px solid #667eea;
+    }
+
+    .btn-secondary:hover {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-danger {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #c0392b;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .card-detail-container {
+            padding: 15px;
+        }
+
+        .card-display {
+            grid-template-columns: 1fr;
+        }
+
+        .card-header h1 {
+            font-size: 1.5em;
+        }
+
+        .card-side {
+            min-height: 200px;
+        }
+
+        .card-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
