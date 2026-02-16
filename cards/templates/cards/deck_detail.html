@@ -278,36 +278,36 @@
         <a href="{% url 'deck_delete' deck.id %}" class="btn btn-danger" onclick="return confirm('Na pewno chcesz usunąć tę talię?')">🗑️ Usuń talię</a>
     </div>
 
+
     <div class="cards-section">
-        <div class="cards-header">
-            <h2>Fiszki w talii</h2>
-            <p class="cards-count">Razem fiszek: <strong>{{ deck.cards.all|length }}</strong></p>
+            <div class="cards-header">
+                <h2>Fiszki w talii</h2>
+                <p class="cards-count">Razem fiszek: <strong>{{ cards|length }}</strong></p>
+            </div>
+    
+            {% if cards %}
+                <div class="cards-grid">
+                    {% for card in cards %}
+                        <div class="card-item">
+                            <div class="card-front">
+                                <h3>Pytanie:</h3>
+                                <p>{{ card.front }}</p>
+                            </div>
+                            <div class="card-back">
+                                <h3>Odpowiedź:</h3>
+                                <p>{{ card.back }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>😔 Brak fiszek w tej talii.</p>
+                    <p>Dodaj pierwszą fiszkę, aby rozpocząć naukę!</p>
+                </div>
+            {% endif %}
         </div>
-
-        {% if deck.cards.all %}
-            <div class="cards-grid">
-                {% for card in deck.cards.all %}
-                    <div class="card-item">
-                        <div class="card-front">
-                            <h3>Pytanie:</h3>
-                            <p>{{ card.question }}</p>
-                        </div>
-                        <div class="card-back">
-                            <h3>Odpowiedź:</h3>
-                            <p>{{ card.answer }}</p>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="empty-state">
-                <p>😔 Brak fiszek w tej talii.</p>
-                <p>Dodaj pierwszą fiszkę, aby rozpocząć naukę!</p>
-            </div>
-        {% endif %}
-    </div>
-<a href="{% url 'card_create' deck.id %}" class="btn btn-success">➕ Dodaj nową fiszkę</a>
-
+    <a href="{% url 'card_create' deck.id %}" class="btn btn-success">➕ Dodaj nową fiszkę</a>
 
     
 </div>

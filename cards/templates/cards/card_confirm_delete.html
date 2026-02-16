@@ -32,7 +32,7 @@
                     🗑️ Usuń fiszkę
                 </button>
             </form>
-            <a href="{% url 'card_detail' card.id %}" class="btn btn-secondary btn-large">
+            <a href="{% url 'card_detail' card.deck.id card.id %}" class="btn btn-secondary btn-large">
                 ← Anuluj
             </a>
         </div>

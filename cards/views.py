@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, Http404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, login, authenticate
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
@@ -106,7 +106,7 @@ def deck_list(request):
     """
     decks = Deck.objects.filter(owner=request.user).order_by('-created_at') # sorted from recent to oldest. by default is ascending order, so we add '-' to sort in descending order.
     return render(request, 'cards/deck_list.html', {
-        'decks': decks,
+        'decks': decks
     })
 
 @login_required
@@ -116,7 +116,7 @@ def deck_detail(request, deck_id):
    
     Retrieves a deck by ID, ensuring it belongs to the current user.
     Returns 404 if the deck is not found or doesn't belong to the user.
-    
+   
     Args:
         request: The HTTP request object
         deck_id: The ID of the deck to display
@@ -124,39 +124,77 @@ def deck_detail(request, deck_id):
     if request.method == "POST":
         return redirect('card_create', deck_id = deck_id)  # Redirect to card creation page on POST request
     deck = get_object_or_404(Deck, id=deck_id, owner=request.user)
+    cards = Card.objects.filter(deck=deck)
     return render(request, 'cards/deck_detail.html', {
-        'deck': deck
+        'deck': deck,
+        'cards': cards,
     })
+
+# @login_required
+# def deck_detail(request, deck_id):
+#     """
+#     Display detailed information about a specific deck.
+   
+#     Retrieves a deck by ID, ensuring it belongs to the current user.
+#     Returns 404 if the deck is not found or doesn't belong to the user.
+    
+#     Args:
+#         request: The HTTP request object
+#         deck_id: The ID of the deck to display
+#     """
+#     if request.method == "POST":
+#         return redirect('card_create', deck_id = deck_id)  # Redirect to card creation page on POST request
+#     deck = get_object_or_404(Deck, id=deck_id, owner=request.user)
+#     return render(request, 'cards/deck_detail.html', {
+#         'deck': deck
+#     })
 
     
 # Card views
 
 @login_required
 def card_create(request, deck_id):
-    """Widok tworzenia fiszki"""
-    deck_id = request.GET.get('deck')
-    deck = None
-    if deck_id:
-        deck = get_object_or_404(Deck, id=deck_id, owner=request.user)
+    deck = get_object_or_404(Deck, id=deck_id, owner=request.user)
     
     if request.method == 'POST':
-        deck_id = request.POST.get('deck')
-        deck = get_object_or_404(Deck, id=deck_id, owner=request.user)
         front = request.POST.get('front')
         back = request.POST.get('back')
         if front and back:
-            card = Card.objects.create(
+            Card.objects.create(
                 deck=deck,
                 front=front,
                 back=back
             )
             return redirect('deck_detail', deck_id=deck.id)
     
-    decks = Deck.objects.filter(owner=request.user)
-    return render(request, 'cards/card_form.html', {
-        'deck': deck,
-        'decks': decks
-    })
+    return render(request, 'cards/card_form.html', {'deck': deck})
+
+# @login_required
+# def card_create(request, deck_id):
+#     """Widok tworzenia fiszki"""
+#     deck_id = request.GET.get('deck')
+#     deck = None
+#     if deck_id:
+#         deck = get_object_or_404(Deck, id=deck_id, owner=request.user)
+    
+#     if request.method == 'POST':
+#         deck_id = request.POST.get('deck')
+#         deck = get_object_or_404(Deck, id=deck_id, owner=request.user)
+#         front = request.POST.get('front')
+#         back = request.POST.get('back')
+#         if front and back:
+#             card = Card.objects.create(
+#                 deck=deck,
+#                 front=front,
+#                 back=back
+#             )
+#             return redirect('deck_detail', deck_id=deck.id)
+    
+#     decks = Deck.objects.filter(owner=request.user)
+#     return render(request, 'cards/card_form.html', {
+#         'deck': deck,
+#         'decks': decks
+#     })
 
 @login_required
 def card_delete(request, card_id):
@@ -165,11 +203,15 @@ def card_delete(request, card_id):
 
     Handles GET requests to display a confirmation page and POST requests to delete the card.
     """
-    card = get_object_or_404(Card, id=card_id, owner=request.user)
+    #card = get_object_or_404(Card, id=card_id, owner=request.user)
+    card = get_object_or_404(Card, id=card_id)
+    if card.deck.owner != request.user:
+        raise Http404
     if request.method == "POST":
         card.delete()
         deck_id = card.deck.id
-        return redirect('card_list', deck_id=deck_id)
+        return redirect('deck_detail', deck_id=deck_id)
+        #return redirect('card_list', deck_id=deck_id)
     return render(request, 'cards/card_confirm_delete.html', {'card': card})
 
 @login_required
@@ -181,19 +223,34 @@ def card_edit(request, card_id):
     - GET: Display the card edit form
     - POST: Process the submitted form and update the card.
     """
-    card = get_object_or_404(Card, id=card_id, owner=request.user)
+    card = get_object_or_404(Card, id=card_id)
+    if card.deck.owner != request.user:
+        raise Http404
+    
     if request.method == "POST":
-        name = request.POST.get('name')
-        card.name = name
+        front = request.POST.get('front')
+        back = request.POST.get('back')
+    if front and back:
+        card.front = front
+        card.back = back
         card.save()
-        return redirect('deck_list')
-    else:
-        return render(request, 'cards/card_form.html', {
-            'card': card
-        })
+        return redirect('card_detail', deck_id=card.deck.id, card_id=card.id)
+    
+    return render(request, 'cards/card_form.html', {'card': card})
+
+    # card = get_object_or_404(Card, id=card_id, owner=request.user)
+    # if request.method == "POST":
+    #     name = request.POST.get('name')
+    #     card.name = name
+    #     card.save()
+    #     return redirect('deck_list')
+    # else:
+    #     return render(request, 'cards/card_form.html', {
+    #         'card': card
+    #     })
 
 @login_required
-def card_detail(request, card_id):
+def card_detail(request, deck_id, card_id):
     """
     Display detailed information about a specific card.
 
@@ -204,7 +261,9 @@ def card_detail(request, card_id):
         request: The HTTP request object
         card_id: The ID of the card to display
     """
-    card = get_object_or_404(Card, id=card_id, owner=request.user)
+    card = get_object_or_404(Card, id=card_id)#,owner=request.user)
+    if card.deck.owner != request.user:
+        raise Http404
     return render(request, 'cards/card_detail.html', {
         'card': card
     })
