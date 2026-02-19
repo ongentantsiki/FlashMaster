@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,12 +21,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2vl4=a)9=l_8o&0qp3$*q3&!6$j8&!b)wg61hq-xdmcw^*fohh'
+#SECRET_KEY = 'django-insecure-2vl4=a)9=l_8o&0qp3$*q3&!6$j8&!b)wg61hq-xdmcw^*fohh'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-insecure-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True # change to False when deploying to production environment. Before was True
+if os.getenv('DEBUG', 'True').lower() == 'false':
+    DEBUG = False
+else:
+    DEBUG = True
 
-ALLOWED_HOSTS = []
+# change to False when deploying to production environment. Before was True
+
+ALLOWED_HOSTS = [host.strip() for host in os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')]
+#np ALLOWED_HOSTS = 'localhost', '127:.0.0.1', '[::1]' -> [' localhost', ' 127:.0.0.1', '[::1]'   ] -> ['localhost', '127:.0.0.1', '[::1]']
 
 
 # Application definition
@@ -116,4 +123,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'static/'  #tylko dla dewelopmentu, w produkcji potrzebujemy STATIC_ROOT
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Dla hostingu za reverse proxy (np. PythonAnywhere) kończącym HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
