@@ -1,0 +1,8 @@
+Django==5.2.10 # Last library version compatible with Python 3.10, for Python 3.11 and later we can use Django 6.0 or later
+gunicorn # WSGI server for running Django in production environment, we will use it with PythonAnywhere 
+#hosting, but we can also use it in development environment for testing purposes, but we can also use it 
+#in production environment for running Django on our own server, but we need to configure it properly 
+#for that, for example we need to create a gunicorn config file and run gunicorn with that config file, 
+#but for now we will just use it in development environment for testing purposes. Settings of python for HTTP, 
+# gunicorn on WSGI server translates data from HTTP to 'django formats' and back, define connectivity between Django server and
+#user brouser (other server WWW in Internet).

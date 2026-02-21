@@ -25,15 +25,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'dev-insecure-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.getenv('DEBUG', 'True').lower() == 'false':
-    DEBUG = False
+if os.getenv('DEBUG', 'True').lower() == 'true': # if default value is 'True' then DEBUG will be True, otherwise it will be False if we set DEBUG env variable to 'False' in production environment
+    DEBUG = True # default value is True, but we want to set it to False in production environment, so we can set env variable DEBUG to 'False' in production environment, then DEBUG will be False, otherwise it will be True if we don't set env variable DEBUG in development environment
 else:
-    DEBUG = True
+    DEBUG = False
 
-# change to False when deploying to production environment. Before was True
+# change to False when deploying to production environment. Before was True?
 
-ALLOWED_HOSTS = [host.strip() for host in os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')]
-#np ALLOWED_HOSTS = 'localhost', '127:.0.0.1', '[::1]' -> [' localhost', ' 127:.0.0.1', '[::1]'   ] -> ['localhost', '127:.0.0.1', '[::1]']
+ALLOWED_HOSTS = [host.strip() for host in os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1, localhost').split(',')] # default value is '' or '127.0.0.1, localhost'? 
+#ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
 
 
 # Application definition
@@ -123,7 +123,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'  #tylko dla dewelopmentu, w produkcji potrzebujemy STATIC_ROOT
+STATIC_URL = 'static/'  #tylko dla dewelopmentu, wiec dla DEBUG=True, w produkcji potrzebujemy STATIC_ROOT
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Dla hostingu za reverse proxy (np. PythonAnywhere) kończącym HTTPS
